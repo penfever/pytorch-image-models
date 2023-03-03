@@ -43,6 +43,30 @@ except ImportError as e:
 
 has_compile = hasattr(torch, 'compile')
 
+IN100_TRUE_IDX = [386, 928, 931, 704, 907, 291, 454, 76, 952, 788, 245, 937, 924, 8, 983, 816, 920, 379, 204, 396, 929, 619, 815, 88, 84, 217, 118, 935, 987, 642, 950, 951, 954, 557, 18, 967, 945, 6, 440, 348, 22, 571, 23, 963, 104, 958, 579, 312, 534, 620, 115, 298, 284, 552, 373, 997, 182, 422, 308, 839, 13, 489, 805, 832, 85, 695, 2, 863, 310, 565, 886, 455, 988, 347, 580, 425, 99, 424, 105, 107, 343, 658, 721, 443, 421, 679, 19, 825, 130, 309, 849, 879, 496, 971, 922, 985, 286, 625, 637, 943]
+ir_idx = [1, 2, 4, 6, 8, 9, 11, 13, 22, 23, 26, 29, 31, 39, 47, 63, 71, 76, 79, 84, 90, 94, 96, 97, 99, 100, 105, 107, 113, 122, 
+125, 130, 132, 144, 145, 147, 148, 150, 151, 155, 160, 161, 162, 163, 171, 172, 178, 187, 195, 199, 203, 207, 208, 219, 
+231, 232, 234, 235, 242, 245, 247, 250, 251, 254, 259, 260, 263, 265, 267, 269, 276, 277, 281, 288, 289, 291, 292, 293, 
+296, 299, 301, 308, 309, 310, 311, 314, 315, 319, 323, 327, 330, 334, 335, 337, 338, 340, 341, 344, 347, 353, 355, 361, 
+362, 365, 366, 367, 368, 372, 388, 390, 393, 397, 401, 407, 413, 414, 425, 428, 430, 435, 437, 441, 447, 448, 457, 462, 
+463, 469, 470, 471, 472, 476, 483, 487, 515, 546, 555, 558, 570, 579, 583, 587, 593, 594, 596, 609, 613, 617, 621, 629, 
+637, 657, 658, 701, 717, 724, 763, 768, 774, 776, 779, 780, 787, 805, 812, 815, 820, 824, 833, 847, 852, 866, 875, 883, 
+889, 895, 907, 928, 931, 932, 933, 934, 936, 937, 943, 945, 947, 948, 949, 951, 953, 954, 957, 963, 965, 967, 980, 981, 
+983, 988]
+IN100_DOGS_IDX = [151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250]
+ia_idx = [6, 11, 13, 15, 17, 22, 23, 27, 30, 37, 39, 42, 47, 50, 57, 70, 71, 76, 79, 89, 90, 94, 96, 97, 99, 105, 107, 108, 110, 
+113, 124, 125, 130, 132, 143, 144, 150, 151, 207, 234, 235, 254, 277, 283, 287, 291, 295, 298, 301, 306, 307, 308, 309, 
+310, 311, 313, 314, 315, 317, 319, 323, 324, 326, 327, 330, 334, 335, 336, 347, 361, 363, 372, 378, 386, 397, 400, 401, 
+402, 404, 407, 411, 416, 417, 420, 425, 428, 430, 437, 438, 445, 456, 457, 461, 462, 470, 472, 483, 486, 488, 492, 496, 
+514, 516, 528, 530, 539, 542, 543, 549, 552, 557, 561, 562, 569, 572, 573, 575, 579, 589, 606, 607, 609, 614, 626, 627, 
+640, 641, 642, 643, 658, 668, 677, 682, 684, 687, 701, 704, 719, 736, 746, 749, 752, 758, 763, 765, 768, 773, 774, 776, 
+779, 780, 786, 792, 797, 802, 803, 804, 813, 815, 820, 823, 831, 833, 835, 839, 845, 847, 850, 859, 862, 870, 879, 880, 
+888, 890, 897, 900, 907, 913, 924, 932, 933, 934, 937, 943, 945, 947, 951, 954, 956, 957, 959, 971, 972, 980, 981, 984, 
+986, 987, 988]
+common_ia_idx = [n for n in ia_idx if n in IN100_TRUE_IDX]
+common_ir_idx = [n for n in ir_idx if n in IN100_TRUE_IDX]
+common_dir_idx = [n for n in ir_idx if n in IN100_DOGS_IDX]
+common_dia_idx = [n for n in ia_idx if n in IN100_DOGS_IDX]
 
 _FMT_EXT = {
     'json': '.json',
@@ -79,6 +103,18 @@ parser.add_argument('--input-size', default=None, nargs=3, type=int,
                     metavar='N N N', help='Input all image dimensions (d h w, e.g. --input-size 3 224 224), uses model default if empty')
 parser.add_argument('--use-train-size', action='store_true', default=False,
                     help='force use of train input size, even when test size is specified in pretrained cfg')
+parser.add_argument('--in100', action='store_true', default=False,
+                    help='select in100 subset of ImageNet (default: False)')
+parser.add_argument('--in100d', action='store_true', default=False,
+                    help='select in100d subset of ImageNet (default: False)')
+parser.add_argument('--in100dr', action='store_true', default=False,
+                    help='select in100dr subset of ImageNet (default: False)')
+parser.add_argument('--in100r', action='store_true', default=False,
+                    help='select in100r subset of ImageNet (default: False)')
+parser.add_argument('--in100da', action='store_true', default=False,
+                    help='select in100da subset of ImageNet (default: False)')
+parser.add_argument('--in100a', action='store_true', default=False,
+                    help='select in100a subset of ImageNet (default: False)')
 parser.add_argument('--crop-pct', default=None, type=float,
                     metavar='N', help='Input image center crop pct')
 parser.add_argument('--crop-mode', default=None, type=str,
@@ -265,16 +301,42 @@ def main():
     all_indices = []
     all_labels = []
     all_outputs = []
+    all_targets = []
     use_probs = args.output_type == 'prob'
     with torch.no_grad():
-        for batch_idx, (input, _) in enumerate(loader):
-
+        for batch_idx, (input, target) in enumerate(loader):
+            if args.in100r or args.in100dr:
+                ir_idx_np = np.array(ir_idx)
+                target = ir_idx_np[target.cpu().numpy()]
+                all_targets.append(target)
+            elif args.in100a or args.in100da:
+                ia_idx_np = np.array(ia_idx)
+                target = ia_idx_np[target.cpu().numpy()]
+                all_targets.append(target)
+            else:
+                all_targets.append(target.cpu().numpy())
             with amp_autocast():
                 output = model(input)
-
+            if args.in100:
+                not_icap_idx = [i for i in range(1000) if i not in IN100_TRUE_IDX]
+                output[:, not_icap_idx] = float("-inf")
+            elif args.in100r:
+                not_icap_idx = [i for i in range(1000) if i not in common_ir_idx]
+                output[:, not_icap_idx] = float("-inf")
+            elif args.in100a:
+                not_icap_idx = [i for i in range(1000) if i not in common_ia_idx]
+                output[:, not_icap_idx] = float("-inf")
+            elif args.in100d:
+                not_icap_idx = [i for i in range(1000) if i not in IN100_DOGS_IDX]
+                output[:, not_icap_idx] = float("-inf")
+            elif args.in100dr:
+                not_icap_idx = [i for i in range(1000) if i not in common_dir_idx]
+                output[:, not_icap_idx] = float("-inf")
+            elif args.in100da:
+                not_icap_idx = [i for i in range(1000) if i not in common_dia_idx]
+                output[:, not_icap_idx] = float("-inf")
             if use_probs:
                 output = output.softmax(-1)
-
             if top_k:
                 output, indices = output.topk(top_k)
                 np_indices = indices.cpu().numpy()
@@ -297,6 +359,7 @@ def main():
     all_indices = np.concatenate(all_indices, axis=0) if all_indices else None
     all_labels = np.concatenate(all_labels, axis=0) if all_labels else None
     all_outputs = np.concatenate(all_outputs, axis=0).astype(np.float32)
+    all_targets = np.concatenate(all_targets, axis=0).astype(np.int64)
     filenames = loader.dataset.filenames(basename=not args.fullname)
 
     output_col = args.output_col or ('prob' if use_probs else 'logit')
@@ -310,6 +373,8 @@ def main():
                 data_dict[f'{args.label_col}_{i}'] = all_labels[:, i]
         for i in range(all_outputs.shape[-1]):
             data_dict[f'{output_col}_{i}'] = all_outputs[:, i]
+        for i in range(all_targets.shape[-1]):
+            data_dict[f'target_{i}'] = all_targets[:, i]
     else:
         if all_indices is not None:
             if all_indices.shape[-1] == 1:
@@ -322,7 +387,9 @@ def main():
         if all_outputs.shape[-1] == 1:
             all_outputs = all_outputs.squeeze(-1)
         data_dict[output_col] = list(all_outputs)
-
+        if all_targets.shape[-1] == 1:
+            all_targets = all_targets.squeeze(-1)
+        data_dict["targets"] = list(all_targets)
     df = pd.DataFrame(data=data_dict)
 
     results_filename = args.results_file
